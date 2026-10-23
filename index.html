@@ -1,0 +1,161 @@
+<!doctype html>
+<html lang="zh-Hant">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>網頁組裝室 · 視覺化前端編輯器</title>
+    <link rel="stylesheet" href="styles.css" />
+    <script src="app.js" defer></script>
+  </head>
+  <body>
+    <header class="topbar">
+      <div class="brand">
+        <span class="brand-mark">⌘</span>
+        <div>網頁組裝室<small>拖曳、調整，看懂程式如何產生。</small></div>
+      </div>
+      <div class="header-actions">
+        <input
+          id="project-name"
+          aria-label="作品名稱"
+          placeholder="我的網頁作品"
+          maxlength="60"
+        />
+        <button id="versions-button">存檔版本</button>
+        <span id="save-status" role="status">本機草稿</span
+        ><button id="undo" title="復原">↶ 復原</button
+        ><button id="redo" title="重做">↷ 重做</button><button id="demo">互動範例</button
+        ><button id="preview-button" class="primary">▶ 操作預覽</button
+        ><button id="export-html">匯出網頁</button
+        ><button id="toggle-sidebar" aria-expanded="true" aria-controls="inspector">
+          收合右側欄 →
+        </button>
+      </div>
+    </header>
+    <div class="workspace">
+      <aside class="left-panel">
+        <div class="left-tabs">
+          <button data-left="components" class="active">元件</button
+          ><button data-left="tree">結構樹</button>
+        </div>
+        <section id="components">
+          <p class="eyebrow">拖到畫布，也可以點一下加入</p>
+          <h2>HTML 元件</h2>
+          <div id="palette" class="palette"></div>
+          <div class="how-to">
+            <strong>從一個區塊開始</strong>
+            <ol>
+              <li>拖入區塊，再把文字或按鈕拖進去。</li>
+              <li>點選元件，用右側調整樣式與互動。</li>
+              <li>觀察原始碼，再進入操作預覽。</li>
+            </ol>
+            <p>拖到元件上緣／下緣可插入前後；拖到區塊中央可放入內部。</p>
+          </div>
+        </section>
+        <section id="tree-panel" hidden>
+          <div class="section-title">
+            <h2>HTML 結構</h2>
+            <span id="node-count"></span>
+          </div>
+          <p class="muted">可拖曳重新安排；選取後用下方按鈕調整順序。</p>
+          <div id="tree"></div>
+        </section>
+        <div class="project-tools">
+          <button id="save-project">儲存專案 JSON</button
+          ><button id="import-project">載入專案 JSON</button
+          ><input type="file" id="project-file" accept=".json,application/json" hidden /><button
+            id="reset"
+          >
+            清空畫布</button
+          ><a href="https://github.com/Ericcc-zizgf/visual-page-builder#readme" target="_blank" rel="noopener">使用說明與原始碼 ↗</a>
+        </div>
+      </aside>
+      <main class="canvas-panel">
+        <div class="canvas-toolbar">
+          <div>
+            <span class="mode-label">編輯畫布</span><span id="selection-path">main · 畫布</span>
+          </div>
+          <div class="viewport-options" aria-label="畫布寬度">
+            <button data-width="full" aria-pressed="true">桌面</button
+            ><button data-width="768" aria-pressed="false">平板 768</button
+            ><button data-width="375" aria-pressed="false">手機 375</button>
+          </div>
+        </div>
+        <div id="canvas-wrap" class="canvas-wrap">
+          <div class="canvas-topline"><span>你的網頁</span><span id="canvas-width"></span></div>
+          <iframe
+            id="canvas"
+            title="可拖入元件的網頁編輯畫布"
+            sandbox="allow-same-origin"
+          ></iframe>
+          <div id="drop-hint" aria-live="polite"></div>
+        </div>
+        <div class="canvas-footer">
+          <span id="status" role="status">先拖入一個元件，或開啟互動範例。</span
+          ><span>編輯時選取元件 · 預覽時實際操作</span>
+        </div>
+      </main>
+      <aside id="inspector" class="inspector">
+        <div class="inspector-heading">
+          <div>
+            <span class="eyebrow">目前選取</span>
+            <h2 id="selected-title">main · 畫布</h2>
+          </div>
+          <span id="selected-id"></span>
+        </div>
+        <div class="inspector-tabs" role="tablist">
+          <button data-panel="html" class="active" role="tab" aria-selected="true">
+            HTML 結構</button
+          ><button data-panel="css" role="tab" aria-selected="false">CSS 排版</button
+          ><button data-panel="js" role="tab" aria-selected="false">JS 互動</button>
+        </div>
+        <p id="breakpoint-label" class="help"></p>
+        <div id="properties" class="properties"></div>
+        <section class="code-panel">
+          <div class="code-heading">
+            <h2>即時原始碼</h2>
+            <button id="copy-code">複製程式碼</button>
+          </div>
+          <div id="code-tabs" class="code-tabs">
+            <button data-code="html" class="active">HTML</button
+            ><button data-code="css">CSS</button><button data-code="js">JavaScript</button>
+          </div>
+          <p id="code-explanation" class="muted"></p>
+          <pre id="source-code" tabindex="0" aria-label="即時產生的原始碼"></pre>
+          <p class="muted">由目前元件、樣式與互動即時產生，可複製或匯出。</p>
+        </section>
+      </aside>
+    </div>
+    <dialog id="preview-dialog">
+      <div class="preview-heading">
+        <div>
+          <strong>操作預覽</strong
+          ><small>這裡執行你設計的互動；編輯標記不會出現在成果中。</small>
+        </div>
+        <button id="close-preview">關閉 ✕</button>
+      </div>
+      <iframe
+        id="runtime"
+        title="可以實際操作的網頁成果"
+        sandbox="allow-scripts allow-forms"
+      ></iframe>
+      <p id="runtime-status" role="status">試著點按鈕、輸入文字，確認互動是否如預期。</p>
+    </dialog>
+    <dialog id="versions-dialog">
+      <div class="preview-heading">
+        <strong>作品存檔版本</strong><button id="close-versions">關閉 ✕</button>
+      </div>
+      <div class="versions-body">
+        <p>自動草稿持續更新；版本會保留當下的完整設計，最多 10 份。還原前會先備份目前設計。</p>
+        <label for="version-note">版本名稱／備註</label
+        ><input id="version-note" placeholder="例如：完成手機版配色" maxlength="80" /><button
+          id="save-version"
+          class="primary"
+        >
+          儲存目前版本
+        </button>
+        <div id="version-status" role="status"></div>
+        <div id="version-list"></div>
+      </div>
+    </dialog>
+  </body>
+</html>
