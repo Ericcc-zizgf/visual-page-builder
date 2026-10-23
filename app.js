@@ -358,7 +358,7 @@ function documentHTML(editing = false) {
     ? "default-src 'none'; style-src 'unsafe-inline'; img-src data:; base-uri 'none'"
     : "default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; img-src data:; form-action 'none'; base-uri 'none'";
   const extra = editing
-    ? '\n[data-builder-id] { cursor: pointer; }\n[data-empty]::after { content: "拖入元件到這個區塊"; color: #93a18c; font-size: 12px; }\n[data-builder-selected] { outline: 2px solid #4b8e56 !important; outline-offset: -2px; }\n[data-drop-target] { outline: 2px dashed #c28b42 !important; }\n'
+    ? '\n[data-builder-id] { cursor: pointer; }\n[data-empty]::after { content: ""; color: #93a18c; font-size: 12px; }\n[data-builder-selected] { outline: 2px solid #4b8e56 !important; outline-offset: -2px; }\n[data-drop-target] { outline: 2px dashed #c28b42 !important; }\n'
     : "";
   return (
     '<!doctype html>\n<html lang="zh-Hant">\n<head>\n  <meta charset="utf-8">\n  <meta name="viewport" content="width=device-width, initial-scale=1">\n  <meta http-equiv="Content-Security-Policy" content="' +
