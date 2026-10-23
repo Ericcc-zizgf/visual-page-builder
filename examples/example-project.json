@@ -1,0 +1,108 @@
+{
+  "version": 1,
+  "name": "AI JSON 匯入範例",
+  "root": {
+    "id": "root",
+    "tag": "main",
+    "text": "",
+    "attrs": {},
+    "styles": {
+      "padding": "32px",
+      "min-height": "100vh",
+      "background-color": "#202120",
+      "color": "#eeeee7"
+    },
+    "responsive": {
+      "tablet": {},
+      "mobile": {}
+    },
+    "children": [
+      {
+        "id": "el-1",
+        "tag": "section",
+        "text": "",
+        "attrs": {},
+        "styles": {
+          "display": "flex",
+          "flex-direction": "column",
+          "gap": "16px",
+          "max-width": "640px",
+          "margin": "0 auto",
+          "padding": "32px",
+          "background-color": "#292b29",
+          "border-radius": "16px"
+        },
+        "responsive": {
+          "tablet": {},
+          "mobile": {
+            "padding": "20px"
+          }
+        },
+        "children": [
+          {
+            "id": "el-2",
+            "tag": "h1",
+            "text": "我的互動網頁",
+            "attrs": {},
+            "styles": {
+              "font-size": "32px",
+              "margin": "0"
+            },
+            "responsive": {
+              "tablet": {},
+              "mobile": {}
+            },
+            "children": [],
+            "actions": []
+          },
+          {
+            "id": "el-3",
+            "tag": "p",
+            "text": "0",
+            "attrs": {},
+            "styles": {
+              "font-size": "36px",
+              "font-weight": "600"
+            },
+            "responsive": {
+              "tablet": {},
+              "mobile": {}
+            },
+            "children": [],
+            "actions": []
+          },
+          {
+            "id": "el-4",
+            "tag": "button",
+            "text": "增加一次",
+            "attrs": {
+              "type": "button"
+            },
+            "styles": {
+              "padding": "12px 20px",
+              "background-color": "#cedbb5",
+              "color": "#202120",
+              "border": "none",
+              "border-radius": "8px"
+            },
+            "responsive": {
+              "tablet": {},
+              "mobile": {}
+            },
+            "children": [],
+            "actions": [
+              {
+                "event": "click",
+                "type": "increment",
+                "target": "el-3",
+                "value": ""
+              }
+            ]
+          }
+        ],
+        "actions": []
+      }
+    ],
+    "actions": []
+  }
+}
