@@ -6,16 +6,54 @@
 
 ![網頁組裝室操作畫面](assets/preview.png)
 
+## 下載完整程式碼
+
+先確認電腦已安裝 Git。在 Windows 的 PowerShell、macOS 或 Linux 的終端機中，切換到想保存專案的位置，再依序執行：
+
+```sh
+git clone https://github.com/Ericcc-zizgf/visual-page-builder.git
+cd visual-page-builder
+```
+
+第一行會將倉庫中的完整程式碼、說明、測試腳本與圖片下載到新的 `visual-page-builder` 資料夾；第二行會進入該資料夾。不需要登入 GitHub 就能下載此公開倉庫。
+
+如果沒有安裝 Git，也可以到 [GitHub 倉庫](https://github.com/Ericcc-zizgf/visual-page-builder)，點 **Code → Download ZIP**，下載後解壓縮。
+
 ## 在自己的電腦啟動
 
-下載或 clone 此倉庫，在專案資料夾內執行：
+本機啟動需安裝 Python 3。完成下載並進入 `visual-page-builder` 資料夾後，依作業系統執行下列其中一種指令。
+
+### Windows（PowerShell）
+
+```powershell
+py -3 -m http.server 5230 --bind 127.0.0.1
+```
+
+若系統找不到 `py`，但已安裝 Python 3 並可使用 `python`，可改用：
+
+```powershell
+python -m http.server 5230 --bind 127.0.0.1
+```
+
+### macOS／Linux（終端機）
 
 ```sh
 python3 -m http.server 5230 --bind 127.0.0.1
 ```
 
-用瀏覽器開啟 http://127.0.0.1:5230/ 。macOS 也可執行 `sh start.command`，停止時按 Control+C。
-不需要 Python 套件、Node.js 建置、API 金鑰或後端。線上版直接由 GitHub Pages 提供靜態檔案。
+啟動後，用瀏覽器開啟 [http://127.0.0.1:5230/](http://127.0.0.1:5230/)。保持終端機執行，結束時按 **Ctrl+C**。macOS 也可在專案資料夾執行 `sh start.command`。
+
+不需要安裝 Python 套件、執行 Node.js 建置或設定 API 金鑰。若只想使用工具，可以直接開啟[線上版](https://ericcc-zizgf.github.io/visual-page-builder/)，不必安裝 Git 或 Python。
+
+## 更新下載的程式碼
+
+如果是使用 `git clone` 下載，在專案資料夾執行：
+
+```sh
+git pull --ff-only
+```
+
+這會在可以直接更新時取得最新版本；若你修改了本機程式碼而更新發生衝突，請先保留並處理自己的修改，再更新，避免直接覆蓋。
 
 ## 專案結構
 
