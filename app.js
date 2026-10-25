@@ -197,8 +197,9 @@ function persist() {
   }, 220);
 }
 function commit(change, description) {
+  const previous = clone(model);
   codeBeforeChange = { html: nodeHTML(model.root), css: cssCode(), js: jsCode() };
-  history.push(clone(model));
+  history.push(previous);
   if (history.length > 60) history.shift();
   future = [];
   change();
@@ -206,6 +207,7 @@ function commit(change, description) {
   refresh();
   persist();
   message(description || "已更新畫布與原始碼。");
+  renderOperationLesson(BuilderLearning.operation(previous, model, description));
 }
 function esc(value) {
   return String(value).replace(
@@ -263,7 +265,10 @@ function effectiveStyles(node, breakpoint = activeBreakpoint) {
 function cssCode(editing = false) {
   const base =
     "* {\n  box-sizing: border-box;\n}\n\n[hidden] {\n  display: none !important;\n}\n\nbody {\n  margin: 0;\n  font-family: system-ui, sans-serif;\n  line-height: 1.6;\n}\n\nimg {\n  max-width: 100%;\n}\n\nbutton, input, textarea {\n  font: inherit;\n}\n\n.is-active {\n  outline: 3px solid #72aa63;\n  background-color: #eaf4df !important;\n}\n";
-  const rule = (node, styles, indent = "") =>
+  const rule = (node, styles, indent = "", scope = "桌面基本樣式") =>
+    indent + "/* 元件 #" + node.id + "：" +
+    BuilderLearning.label(node).replace(/\*\//g, "").replace(/[<>\r\n]/g, " ").slice(0, 90) +
+    " · " + scope + " */\n" +
     indent +
     "#" +
     node.id +
@@ -287,7 +292,7 @@ function cssCode(editing = false) {
     ]) {
       const rules = all()
         .filter((n) => Object.keys(n.responsive?.[key] || {}).length)
-        .map((n) => rule(n, n.responsive[key], "  "));
+        .map((n) => rule(n, n.responsive[key], "  ", BREAKPOINTS[key]));
       if (rules.length)
         result += "\n@media (max-width: " + max + "px) {\n" + rules.join("\n\n") + "\n}\n";
     }
@@ -313,9 +318,10 @@ function actionLines(action, indent = "  ") {
     lines.push(indent + "target.textContent = event.currentTarget.value;");
   return lines;
 }
-function jsCode() {
+function jsCode(onlyId) {
   const blocks = [];
-  for (const node of all())
+  for (const node of all()) {
+    if (onlyId && node.id !== onlyId) continue;
     for (const action of node.actions) {
       if (!find(action.target)) continue;
       const lines = [
@@ -357,6 +363,7 @@ function jsCode() {
       lines.push("});");
       blocks.push(lines.join("\n"));
     }
+  }
   return blocks.length
     ? blocks.join("\n\n") + "\n"
     : "// 尚未加入互動。\n// 在「JS 互動」選擇事件、條件、動作與目標元件。\n";
@@ -428,6 +435,64 @@ function nodeLabel(id) {
   const n = find(id);
   return n ? n.tag + " #" + n.id + (n.text ? " · " + n.text.slice(0, 16) : "") : "#" + id;
 }
+function lessonContent(container, entry) {
+  const title = document.createElement("strong");
+  title.textContent = entry.title;
+  container.append(title);
+  for (const [key, prefix] of [["who", "對應元件："], ["effect", ""], ["syntax", "語法："], ["tip", "觀察提示："]]) {
+    if (!entry[key]) continue;
+    const p = document.createElement("p");
+    p.textContent = prefix + entry[key];
+    container.append(p);
+  }
+  if (entry.code) {
+    const pre = document.createElement("pre"), code = document.createElement("code");
+    code.textContent = entry.code;
+    pre.append(code);
+    container.append(pre);
+  }
+}
+function renderOperationLesson(lesson) {
+  const box = $("#operation-explanation");
+  box.replaceChildren();
+  const heading = document.createElement("p");
+  heading.textContent = lesson.title;
+  box.append(heading);
+  const show = entries => {
+    const group = document.createElement("div");
+    for (const entry of entries) {
+      const item = document.createElement("div");
+      item.className = "lesson-entry";
+      if (entry.actionNode) entry.code = jsCode(entry.actionNode);
+      if (entry.htmlNode && find(entry.htmlNode)) entry.code = nodeHTML(find(entry.htmlNode));
+      lessonContent(item, entry);
+      group.append(item);
+    }
+    return group;
+  };
+  box.append(show(lesson.entries.slice(0, 3)));
+  if (lesson.entries.length > 3) {
+    const more = document.createElement("details"), summary = document.createElement("summary");
+    summary.textContent = "查看另外 " + (lesson.entries.length - 3) + " 項程式變化";
+    more.append(summary, show(lesson.entries.slice(3)));
+    box.append(more);
+  }
+}
+let explainedCodeLine = null;
+function showLineLesson(tab, index, line, owner, context) {
+  explainedCodeLine = { tab, index, line };
+  $("#source-code").querySelectorAll(".code-line").forEach(el => {
+    const chosen = Number(el.dataset.line) === index + 1;
+    el.classList.toggle("explained-line", chosen);
+    el.tabIndex = chosen ? 0 : -1;
+  });
+  const entry = BuilderLearning.lineInfo(tab, line, find(owner), context);
+  $("#line-lesson-title").textContent = { html: "HTML", css: "CSS", js: "JavaScript" }[tab] + " 第 " + (index + 1) + " 行 · " + entry.title;
+  const box = $("#line-explanation");
+  box.replaceChildren();
+  lessonContent(box, { ...entry, title: "這行在做什麼" });
+  $("#line-lesson").scrollIntoView({ block: "nearest", inline: "nearest" });
+}
 function renderCode() {
   const codes = { html: nodeHTML(model.root), css: cssCode(), js: jsCode() },
     lines = codes[codeTab].split("\n"),
@@ -443,20 +508,39 @@ function renderCode() {
   let owner = "",
     cssOwner = "",
     jsOwner = "",
-    mediaScope = "desktop";
+    mediaScope = "desktop",
+    jsTarget = "";
+  const htmlStack = [];
   pre.replaceChildren();
+  pre.onkeydown = event => {
+    if (event.target !== pre) return;
+    if (["ArrowDown", "Enter"].includes(event.key)) {
+      event.preventDefault();
+      const line = pre.querySelector('.code-line[tabindex="0"]') || pre.firstElementChild;
+      line?.focus();
+      if (event.key === "Enter") line?.click();
+    }
+  };
   lines.forEach((line, index) => {
     const span = document.createElement("span");
     span.className = "code-line";
     span.dataset.line = index + 1;
     const htmlId = line.match(/\bid="(root|el-\d+)"/);
-    if (htmlId) owner = htmlId[1];
+    if (htmlId) {
+      owner = htmlId[1];
+      if (!VOID.has(find(owner)?.tag) && !line.includes("</")) htmlStack.push(owner);
+    } else if (/^\s*<\//.test(line)) owner = htmlStack.pop() || "root";
     if (/^@media.*1024px/.test(line)) mediaScope = "tablet";
     if (/^@media.*600px/.test(line)) mediaScope = "mobile";
     const cssId = line.match(/^\s*#(root|el-\d+)\s*\{/);
     if (cssId) cssOwner = cssId[1];
+    const cssHeading = line.match(/^\s*\/\* 元件 #(root|el-\d+)：/);
+    if (cssHeading) cssOwner = cssHeading[1];
     const jsId = line.match(/^\/\/ 元件 #(root|el-\d+)：/);
-    if (jsId) jsOwner = jsId[1];
+    if (jsId) { jsOwner = jsId[1]; jsTarget = ""; }
+    const jsDocumentId = line.match(/document\.getElementById\("(root|el-\d+)"\)/)?.[1];
+    if (codeTab === "js" && line.startsWith("document.getElementById(") && jsDocumentId) jsOwner = jsDocumentId;
+    if (codeTab === "js" && line.includes("const target =") && jsDocumentId) jsTarget = jsDocumentId;
     const relevant =
       codeTab === "html"
         ? index >= htmlLine && index < htmlEnd
@@ -477,8 +561,31 @@ function renderCode() {
     if (codeTab === "html" && htmlId) {
       span.dataset.codeNode = owner;
       span.title = "點擊對照 " + nodeLabel(owner);
-      span.onclick = () => select(owner);
     }
+    const lineOwner = codeTab === "html" ? owner : codeTab === "css" ? cssOwner : jsOwner;
+    const context = codeTab === "js" && lineOwner
+      ? "事件來源：" + nodeLabel(lineOwner) + (jsTarget ? "；目前動作目標：" + nodeLabel(jsTarget) : "") : "";
+    span.dataset.codeOwner = lineOwner;
+    span.setAttribute("role", "button");
+    span.setAttribute("aria-label", "第 " + (index + 1) + " 行，點選查看解說：" + line.trim());
+    span.tabIndex = index === 0 ? 0 : -1;
+    const explain = () => {
+      if (lineOwner && find(lineOwner) && selected !== lineOwner) select(lineOwner);
+      showLineLesson(codeTab, index, line, lineOwner, context);
+    };
+    span.onclick = explain;
+    span.onkeydown = event => {
+      if (["Enter", " "].includes(event.key)) {
+        event.preventDefault();
+        explain();
+        $("#source-code").children[index]?.focus({ preventScroll: true });
+      }
+      if (["ArrowDown", "ArrowUp"].includes(event.key)) {
+        event.preventDefault();
+        const next = event.key === "ArrowDown" ? span.nextElementSibling : span.previousElementSibling;
+        if (next) { span.tabIndex = -1; next.tabIndex = 0; next.focus(); }
+      }
+    };
     span.textContent = line + (index < lines.length - 1 ? "\n" : "");
     pre.append(span);
     if (codeTab === "css" && /^\s*}\s*$/.test(line)) cssOwner = "";
@@ -502,6 +609,16 @@ function renderCode() {
           "：" +
           (lastStyleKey ? "剛才調整 " + lastStyleKey : "亮色區域對應目前元件。")
         : "目前事件來自 " + nodeLabel(selected) + "；藍框標出互動目標。";
+  $("#code-section-title").textContent = { html: "HTML 原始碼 · 結構與內容", css: "CSS 原始碼 · 排版與外觀", js: "JavaScript 原始碼 · 事件與動作" }[codeTab];
+  if (explainedCodeLine?.tab === codeTab && lines[explainedCodeLine.index] === explainedCodeLine.line) {
+    const row = pre.children[explainedCodeLine.index];
+    row?.classList.add("explained-line");
+    if (row) { pre.firstElementChild.tabIndex = -1; row.tabIndex = 0; }
+  } else {
+    explainedCodeLine = null;
+    $("#line-lesson-title").textContent = "點一行，看懂程式";
+    $("#line-explanation").textContent = "點選上方任一行，查看用途、語法與畫面上的對應元件。每個 CSS 區段的小標題會標示元件與適用尺寸。";
+  }
   document
     .querySelectorAll("[data-code]")
     .forEach((b) => b.classList.toggle("active", b.dataset.code === codeTab));
@@ -1776,21 +1893,25 @@ $("#toggle-sidebar").onclick = () => {
 };
 $("#undo").onclick = () => {
   if (!history.length) return;
+  const previous = clone(model);
   future.push(clone(model));
   model = history.pop();
   selected = "root";
   refresh();
   persist();
   message("已復原上一個操作。");
+  renderOperationLesson(BuilderLearning.operation(previous, model, "復原：把作品還原到上一個狀態。"));
 };
 $("#redo").onclick = () => {
   if (!future.length) return;
+  const previous = clone(model);
   history.push(clone(model));
   model = future.pop();
   selected = "root";
   refresh();
   persist();
   message("已重做。");
+  renderOperationLesson(BuilderLearning.operation(previous, model, "重做：重新套用剛才復原的變更。"));
 };
 $("#demo").onclick = () => $("#templates-dialog").showModal();
 $("#close-templates").onclick = () => $("#templates-dialog").close();

@@ -445,6 +445,39 @@ textarea {
   margin-top: 18px;
   padding-top: 12px;
 }
+.operation-lesson {
+  margin: 10px 14px;
+  padding: 12px;
+  background: #eef4e9;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  font-size: 12px;
+}
+.operation-lesson summary { cursor: pointer; font-weight: 700; }
+#operation-explanation { max-height: 240px; overflow: auto; margin-top: 10px; overflow-wrap: anywhere; }
+.lesson-entry + .lesson-entry { border-top: 1px solid var(--line); margin-top: 12px; padding-top: 12px; }
+.lesson-entry p, #line-explanation p { margin: 7px 0; }
+.lesson-entry pre, #line-explanation pre {
+  background: #fff;
+  color: #263c2d;
+  padding: 9px;
+  border: 1px solid var(--line);
+  border-radius: 4px;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  font: 11px/1.7 ui-monospace, monospace;
+  max-height: 160px;
+  overflow: auto;
+}
+#code-section-title { font-size: 13px; margin: 12px 0 8px; }
+.line-lesson { padding: 12px; background: #f0f5e9; border: 1px solid var(--line); border-radius: 5px; overflow-wrap: anywhere; }
+.line-lesson h3 { font-size: 13px; margin: 0 0 10px; }
+#line-explanation { font-size: 12px; line-height: 1.8; max-height: 300px; overflow: auto; }
+#source-code .code-line { cursor: pointer; }
+#source-code .code-line::before { content: attr(data-line); display: inline-block; min-width: 3ch; margin-right: 12px; color: #a9bba9; text-align: right; user-select: none; }
+#source-code .code-line:hover { background-color: #364e44; }
+#source-code .code-line:focus-visible { outline: 2px solid #e5c37b; outline-offset: -2px; }
+#source-code .code-line.explained-line { background: #435b46; box-shadow: inset 3px 0 #e5c37b; }
 .code-heading {
   display: flex;
   justify-content: space-between;

@@ -7,6 +7,7 @@
     <link rel="stylesheet" href="styles.css" />
     <script src="vendor/babel.js" defer></script>
     <script src="source-importer.js" defer></script>
+    <script src="learning.js" defer></script>
     <script src="app.js" defer></script>
   </head>
   <body>
@@ -112,6 +113,10 @@
           ><button data-panel="js" role="tab" aria-selected="false">JS 互動</button>
         </div>
         <p id="breakpoint-label" class="help"></p>
+        <details class="operation-lesson" open>
+          <summary>剛才的操作與程式碼</summary>
+          <div id="operation-explanation" role="status" aria-live="polite">修改元件或樣式後，這裡會說明操作如何改變程式碼與畫面。</div>
+        </details>
         <div id="properties" class="properties"></div>
         <section class="code-panel">
           <div class="code-heading">
@@ -123,8 +128,13 @@
             ><button data-code="css">CSS</button><button data-code="js">JavaScript</button>
           </div>
           <p id="code-explanation" class="muted"></p>
+          <h3 id="code-section-title"></h3>
           <pre id="source-code" tabindex="0" aria-label="即時產生的原始碼"></pre>
-          <p class="muted">由目前元件、樣式與互動即時產生，可複製或匯出。</p>
+          <article id="line-lesson" class="line-lesson" aria-labelledby="line-lesson-title">
+            <h3 id="line-lesson-title">點一行，看懂程式</h3>
+            <div id="line-explanation" aria-live="polite">點選上方任一行原始碼，查看用途、語法與畫面上的對應元件。也可聚焦程式碼後用方向鍵選行，按 Enter 查看。</div>
+          </article>
+          <p class="muted">HTML、CSS、JavaScript 都是實際產生的原始碼；可複製或匯出。</p>
         </section>
       </aside>
     </div>
