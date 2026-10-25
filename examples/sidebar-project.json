@@ -1,0 +1,318 @@
+{
+  "version": 1,
+  "name": "可收合側邊欄範例",
+  "root": {
+    "id": "root",
+    "tag": "main",
+    "text": "",
+    "attrs": {},
+    "styles": {
+      "padding": "0",
+      "min-height": "600px",
+      "background-color": "#f4f6f2",
+      "color": "#263c2d"
+    },
+    "children": [
+      {
+        "id": "el-1",
+        "tag": "header",
+        "text": "",
+        "attrs": {},
+        "styles": {
+          "display": "flex",
+          "align-items": "center",
+          "flex-wrap": "wrap",
+          "gap": "16px",
+          "padding": "18px 24px",
+          "background-color": "#ffffff",
+          "border": "1px solid #d9e3d2"
+        },
+        "children": [
+          {
+            "id": "el-2",
+            "tag": "button",
+            "text": "☰ 收合側邊欄",
+            "attrs": {
+              "type": "button"
+            },
+            "styles": {
+              "padding": "10px 16px",
+              "background-color": "#2d694c",
+              "color": "#ffffff",
+              "border": "none",
+              "border-radius": "6px"
+            },
+            "children": [],
+            "actions": [
+              {
+                "event": "click",
+                "type": "text",
+                "target": "el-2",
+                "value": "☰ 展開側邊欄",
+                "condition": {
+                  "source": "el-2",
+                  "operator": "equals",
+                  "value": "☰ 收合側邊欄"
+                },
+                "otherwise": {
+                  "type": "text",
+                  "target": "el-2",
+                  "value": "☰ 收合側邊欄"
+                }
+              },
+              {
+                "event": "click",
+                "type": "toggle",
+                "target": "el-5",
+                "value": ""
+              }
+            ]
+          },
+          {
+            "id": "el-3",
+            "tag": "h1",
+            "text": "我的工作空間",
+            "attrs": {},
+            "styles": {
+              "margin": "0",
+              "font-size": "22px"
+            },
+            "children": [],
+            "actions": []
+          }
+        ],
+        "actions": []
+      },
+      {
+        "id": "el-4",
+        "tag": "div",
+        "text": "",
+        "attrs": {},
+        "styles": {
+          "display": "flex",
+          "align-items": "stretch",
+          "min-height": "510px"
+        },
+        "children": [
+          {
+            "id": "el-5",
+            "tag": "nav",
+            "text": "",
+            "attrs": {
+              "aria-label": "工作空間導覽"
+            },
+            "styles": {
+              "display": "flex",
+              "flex-direction": "column",
+              "gap": "12px",
+              "width": "220px",
+              "flex": "0 0 220px",
+              "padding": "24px",
+              "background-color": "#e8efe4"
+            },
+            "children": [
+              {
+                "id": "el-6",
+                "tag": "h2",
+                "text": "導覽選單",
+                "attrs": {},
+                "styles": {
+                  "margin": "0 0 12px",
+                  "font-size": "16px"
+                },
+                "children": [],
+                "actions": []
+              },
+              {
+                "id": "el-13",
+                "tag": "button",
+                "text": "總覽",
+                "attrs": {
+                  "type": "button"
+                },
+                "styles": {
+                  "padding": "10px 12px",
+                  "text-align": "left",
+                  "background-color": "#ffffff",
+                  "color": "#263c2d",
+                  "border": "1px solid #c8d6c2",
+                  "border-radius": "6px"
+                },
+                "children": [],
+                "actions": [
+                  {
+                    "event": "click",
+                    "type": "text",
+                    "target": "el-8",
+                    "value": "總覽",
+                    "steps": [
+                      {
+                        "type": "text",
+                        "target": "el-9",
+                        "value": "歡迎回來！點擊左上角按鈕收合側邊欄，內容區就會自動展開。"
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "id": "el-14",
+                "tag": "button",
+                "text": "我的專案",
+                "attrs": {
+                  "type": "button"
+                },
+                "styles": {
+                  "padding": "10px 12px",
+                  "text-align": "left",
+                  "background-color": "#ffffff",
+                  "color": "#263c2d",
+                  "border": "1px solid #c8d6c2",
+                  "border-radius": "6px"
+                },
+                "children": [],
+                "actions": [
+                  {
+                    "event": "click",
+                    "type": "text",
+                    "target": "el-8",
+                    "value": "我的專案",
+                    "steps": [
+                      {
+                        "type": "text",
+                        "target": "el-9",
+                        "value": "在這裡整理你的專案。你可以把這段內容換成專案清單。"
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "id": "el-15",
+                "tag": "button",
+                "text": "設定",
+                "attrs": {
+                  "type": "button"
+                },
+                "styles": {
+                  "padding": "10px 12px",
+                  "text-align": "left",
+                  "background-color": "#ffffff",
+                  "color": "#263c2d",
+                  "border": "1px solid #c8d6c2",
+                  "border-radius": "6px"
+                },
+                "children": [],
+                "actions": [
+                  {
+                    "event": "click",
+                    "type": "text",
+                    "target": "el-8",
+                    "value": "設定",
+                    "steps": [
+                      {
+                        "type": "text",
+                        "target": "el-9",
+                        "value": "在這裡調整工作空間。你可以加入輸入框與更多互動。"
+                      }
+                    ]
+                  }
+                ]
+              }
+            ],
+            "actions": [],
+            "responsive": {
+              "mobile": {
+                "width": "120px",
+                "flex": "0 0 120px",
+                "padding": "16px 12px"
+              }
+            }
+          },
+          {
+            "id": "el-7",
+            "tag": "section",
+            "text": "",
+            "attrs": {},
+            "styles": {
+              "flex": "1",
+              "width": "0",
+              "padding": "32px"
+            },
+            "children": [
+              {
+                "id": "el-8",
+                "tag": "h2",
+                "text": "總覽",
+                "attrs": {},
+                "styles": {
+                  "margin": "0 0 16px",
+                  "font-size": "28px"
+                },
+                "children": [],
+                "actions": []
+              },
+              {
+                "id": "el-9",
+                "tag": "p",
+                "text": "歡迎回來！點擊左上角按鈕收合側邊欄，內容區就會自動展開。",
+                "attrs": {},
+                "styles": {
+                  "margin": "0 0 24px"
+                },
+                "children": [],
+                "actions": []
+              },
+              {
+                "id": "el-10",
+                "tag": "article",
+                "text": "",
+                "attrs": {},
+                "styles": {
+                  "padding": "24px",
+                  "background-color": "#ffffff",
+                  "border": "1px solid #d9e3d2",
+                  "border-radius": "8px"
+                },
+                "children": [
+                  {
+                    "id": "el-11",
+                    "tag": "h2",
+                    "text": "從這裡開始你的頁面",
+                    "attrs": {},
+                    "styles": {
+                      "margin": "0 0 12px",
+                      "font-size": "20px"
+                    },
+                    "children": [],
+                    "actions": []
+                  },
+                  {
+                    "id": "el-12",
+                    "tag": "p",
+                    "text": "你可以修改文字、顏色和排版，或在側邊欄加入更多按鈕。導覽按鈕也能切換內容區的標題與說明。",
+                    "attrs": {},
+                    "styles": {
+                      "margin": "0"
+                    },
+                    "children": [],
+                    "actions": []
+                  }
+                ],
+                "actions": []
+              }
+            ],
+            "actions": [],
+            "responsive": {
+              "mobile": {
+                "padding": "20px 12px"
+              }
+            }
+          }
+        ],
+        "actions": []
+      }
+    ],
+    "actions": []
+  }
+}

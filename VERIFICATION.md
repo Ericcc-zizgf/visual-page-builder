@@ -31,3 +31,5 @@
 - 拖曳時的真正插入線與方向提示。
 
 新增測試在 tests/upgrade.cjs，配合原有 browser.cjs、edge.cjs。條件仍是預設選項，尚不支援任意 JavaScript、迴圈或 API 呼叫。
+
+互動範本新增驗證（tests/templates.cjs）：範本選單開關、載入與復原／重做、側欄反覆收合與展開、按鈕文字與 aria-expanded 同步、內容區填滿剩餘寬度、導覽更新內容、JSON 往返與草稿保存、離線 HTML 匯出，以及 375px 手機無水平溢出。

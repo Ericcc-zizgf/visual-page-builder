@@ -23,7 +23,7 @@
         <button id="versions-button">存檔版本</button>
         <span id="save-status" role="status">本機草稿</span
         ><button id="undo" title="復原">↶ 復原</button
-        ><button id="redo" title="重做">↷ 重做</button><button id="demo">互動範例</button
+        ><button id="redo" title="重做">↷ 重做</button><button id="demo">互動範本</button
         ><button id="preview-button" class="primary">▶ 操作預覽</button
         ><button id="export-html">匯出網頁</button
         ><button id="toggle-sidebar" aria-expanded="true" aria-controls="inspector">
@@ -90,7 +90,7 @@
           <div id="drop-hint" aria-live="polite"></div>
         </div>
         <div class="canvas-footer">
-          <span id="status" role="status">先拖入一個元件，或開啟互動範例。</span
+          <span id="status" role="status">先拖入一個元件，或開啟互動範本。</span
           ><span>編輯時選取元件 · 預覽時實際操作</span>
         </div>
       </main>
@@ -125,6 +125,23 @@
         </section>
       </aside>
     </div>
+    <dialog id="templates-dialog" aria-labelledby="templates-title">
+      <div class="preview-heading">
+        <strong id="templates-title">選擇互動範本</strong>
+        <button id="close-templates">關閉 ✕</button>
+      </div>
+      <div class="templates-body">
+        <p class="muted">點選範本即可載入畫布，再按「操作預覽」試用。載入會取代目前畫布，可按「復原」找回。</p>
+        <button class="template-choice" data-template="counter">
+          <strong>點擊計數器</strong>
+          <span>按一下數字加一，認識按鈕事件與文字更新。</span>
+        </button>
+        <button class="template-choice" data-template="sidebar">
+          <strong>可收合側邊欄</strong>
+          <span>含頁首、導覽側欄與內容區；點按鈕收合或展開，內容自動填滿空間。</span>
+        </button>
+      </div>
+    </dialog>
     <dialog id="preview-dialog">
       <div class="preview-heading">
         <div>

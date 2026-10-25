@@ -829,6 +829,24 @@ dialog::backdrop {
   overflow: auto;
   max-height: calc(80vh - 65px);
 }
+#templates-dialog {
+  width: min(560px, calc(100% - 24px));
+  height: auto;
+  max-height: 90vh;
+}
+.templates-body {
+  padding: 20px;
+  display: grid;
+  gap: 12px;
+}
+.templates-body p { margin: 0 0 4px; }
+.template-choice {
+  padding: 18px;
+  text-align: left;
+  white-space: normal;
+}
+.template-choice strong, .template-choice span { display: block; }
+.template-choice span { margin-top: 6px; color: var(--muted); font-size: 13px; }
 #versions-dialog {
   width: min(700px, 94vw);
   height: auto;

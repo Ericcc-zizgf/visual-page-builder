@@ -298,7 +298,11 @@ function actionLines(action, indent = "  ") {
   const lines = [indent + `const target = document.getElementById(${jsValue(action.target)});`];
   if (action.type === "text")
     lines.push(indent + `target.textContent = ${jsValue(action.value || "")};`);
-  if (action.type === "toggle") lines.push(indent + "target.hidden = !target.hidden;");
+  if (action.type === "toggle")
+    lines.push(
+      indent + "target.hidden = !target.hidden;",
+      indent + 'if (event.currentTarget.getAttribute("aria-controls") === target.id) event.currentTarget.setAttribute("aria-expanded", String(!target.hidden));',
+    );
   if (action.type === "class") lines.push(indent + 'target.classList.toggle("is-active");');
   if (action.type === "increment")
     lines.push(
@@ -318,6 +322,11 @@ function jsCode() {
         `// 元件 #${node.id}：${action.event} → ${ACTIONS[action.type]} → #${action.target}`,
         `document.getElementById(${jsValue(node.id)}).addEventListener(${jsValue(action.event)}, function (event) {`,
       ];
+      if (node.tag === "button" && action.type === "toggle")
+        lines.unshift(
+          `document.getElementById(${jsValue(node.id)}).setAttribute("aria-controls", ${jsValue(action.target)});`,
+          `document.getElementById(${jsValue(node.id)}).setAttribute("aria-expanded", String(!document.getElementById(${jsValue(action.target)}).hidden));`,
+        );
       if (action.event === "submit" || node.tag === "a")
         lines.push("  event.preventDefault();");
       const condition = action.condition;
@@ -1655,6 +1664,73 @@ function demo() {
     selected = section.id;
   }, "已載入可操作的範例；按「操作預覽」試試按鈕，也可以復原。");
 }
+function sidebarDemo() {
+  commit(() => {
+    model = blank();
+    model.name = "可收合側邊欄範例";
+    model.root.styles = {
+      padding: "0", "min-height": "600px", "background-color": "#f4f6f2", color: "#263c2d",
+    };
+    const node = (tag, text, styles) => {
+      const n = make(tag);
+      n.text = text;
+      n.styles = styles;
+      return n;
+    };
+    const header = node("header", "", {
+      display: "flex", "align-items": "center", "flex-wrap": "wrap", gap: "16px",
+      padding: "18px 24px", "background-color": "#ffffff", border: "1px solid #d9e3d2",
+    });
+    const toggle = node("button", "☰ 收合側邊欄", {
+      padding: "10px 16px", "background-color": "#2d694c", color: "#ffffff",
+      border: "none", "border-radius": "6px",
+    });
+    const brand = node("h1", "我的工作空間", { margin: "0", "font-size": "22px" });
+    header.children = [toggle, brand];
+    const layout = node("div", "", { display: "flex", "align-items": "stretch", "min-height": "510px" });
+    const sidebar = node("nav", "", {
+      display: "flex", "flex-direction": "column", gap: "12px", width: "220px", flex: "0 0 220px",
+      padding: "24px", "background-color": "#e8efe4",
+    });
+    sidebar.attrs = { "aria-label": "工作空間導覽" };
+    sidebar.responsive = { mobile: { width: "120px", flex: "0 0 120px", padding: "16px 12px" } };
+    sidebar.children = [node("h2", "導覽選單", { margin: "0 0 12px", "font-size": "16px" })];
+    const content = node("section", "", { flex: "1", width: "0", padding: "32px" });
+    content.responsive = { mobile: { padding: "20px 12px" } };
+    const title = node("h2", "總覽", { margin: "0 0 16px", "font-size": "28px" });
+    const description = node("p", "歡迎回來！點擊左上角按鈕收合側邊欄，內容區就會自動展開。", { margin: "0 0 24px" });
+    const card = node("article", "", {
+      padding: "24px", "background-color": "#ffffff", border: "1px solid #d9e3d2", "border-radius": "8px",
+    });
+    card.children = [
+      node("h2", "從這裡開始你的頁面", { margin: "0 0 12px", "font-size": "20px" }),
+      node("p", "你可以修改文字、顏色和排版，或在側邊欄加入更多按鈕。導覽按鈕也能切換內容區的標題與說明。", { margin: "0" }),
+    ];
+    content.children = [title, description, card];
+    for (const [label, detail] of [
+      ["總覽", "歡迎回來！點擊左上角按鈕收合側邊欄，內容區就會自動展開。"],
+      ["我的專案", "在這裡整理你的專案。你可以把這段內容換成專案清單。"],
+      ["設定", "在這裡調整工作空間。你可以加入輸入框與更多互動。"],
+    ]) {
+      const item = node("button", label, {
+        padding: "10px 12px", "text-align": "left", "background-color": "#ffffff", color: "#263c2d",
+        border: "1px solid #c8d6c2", "border-radius": "6px",
+      });
+      item.actions = [{ event: "click", type: "text", target: title.id, value: label,
+        steps: [{ type: "text", target: description.id, value: detail }] }];
+      sidebar.children.push(item);
+    }
+    toggle.actions = [
+      { event: "click", type: "text", target: toggle.id, value: "☰ 展開側邊欄",
+        condition: { source: toggle.id, operator: "equals", value: "☰ 收合側邊欄" },
+        otherwise: { type: "text", target: toggle.id, value: "☰ 收合側邊欄" } },
+      { event: "click", type: "toggle", target: sidebar.id, value: "" },
+    ];
+    layout.children = [sidebar, content];
+    model.root.children = [header, layout];
+    selected = toggle.id;
+  }, "已載入可收合側邊欄；按「操作預覽」即可試用，所有元件與互動都可以編輯。");
+}
 for (const [tag, label] of TYPES) {
   const b = document.createElement("button");
   b.draggable = true;
@@ -1716,7 +1792,15 @@ $("#redo").onclick = () => {
   persist();
   message("已重做。");
 };
-$("#demo").onclick = demo;
+$("#demo").onclick = () => $("#templates-dialog").showModal();
+$("#close-templates").onclick = () => $("#templates-dialog").close();
+document.querySelectorAll("[data-template]").forEach((button) => {
+  button.onclick = () => {
+    if (button.dataset.template === "sidebar") sidebarDemo();
+    else demo();
+    $("#templates-dialog").close();
+  };
+});
 $("#reset").onclick = () =>
   commit(() => {
     model = blank();
