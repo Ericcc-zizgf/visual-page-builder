@@ -1822,6 +1822,96 @@ $("#export-html").onclick = () => {
 $("#save-project").onclick = () =>
   download("my-visual-project.json", JSON.stringify(model, null, 2), "application/json");
 $("#import-project").onclick = () => $("#project-file").click();
+let sourceConversion = null, sourceRevision = 0, sourceAssets = [], sourceBusy = false;
+function invalidateSource() {
+  sourceRevision++;
+  sourceConversion = null;
+  $("#load-source").disabled = true;
+  $("#download-source").disabled = true;
+  $("#source-result").textContent = "原始碼已變更，請重新分析。";
+}
+$("#import-source").onclick = () => $("#source-dialog").showModal();
+$("#close-source").onclick = () => $("#source-dialog").close();
+$("#clear-source-files").onclick = () => {
+  sourceAssets = [];
+  invalidateSource();
+  $("#source-file-status").textContent = "已清除附加的 CSS／JS 檔案；下方貼上的原始碼仍會參與分析。";
+};
+for (const selector of ["#source-html", "#source-css", "#source-js"])
+  $(selector).addEventListener("input", invalidateSource);
+async function readSourceFiles(files) {
+  invalidateSource();
+  const revision = sourceRevision;
+  try {
+    const list = [...files];
+    if (sourceBusy) throw Error("請等待目前分析完成後再選取檔案。");
+    if (!list.length) return;
+    if (list.length > 20) throw Error("一次最多選取 20 個檔案。");
+    if (new Set(list.map(f => f.name)).size !== list.length) throw Error("附加檔案不可同名，請先重新命名並更新 HTML 中的引用。");
+    if (list.some(f => !/\.(html?|css|m?js)$/i.test(f.name))) throw Error("僅接受 HTML、CSS、JavaScript 檔案。");
+    if (list.reduce((sum, f) => sum + f.size, 0) > 5 * 1024 * 1024) throw Error("檔案合計最多 5 MB。");
+    const html = list.filter(f => /\.html?$/i.test(f.name));
+    if (html.length > 1) throw Error("每次只匯入一個 HTML 頁面，其他可選取 CSS、JS。");
+    const values = await Promise.all(list.map(async f => ({ name: f.name, text: await f.text() })));
+    if (revision !== sourceRevision) return;
+    if (html.length) $("#source-html").value = values.find(f => f.name === html[0].name).text;
+    sourceAssets = values.filter(f => !/\.html?$/i.test(f.name));
+    $("#source-file-status").textContent = "已讀取：" + values.map(f => f.name).join("、") + "。CSS／JS 檔案會與上方貼上的內容一起分析。";
+    $("#source-result").textContent = "檔案已就緒，按「分析並轉換」。";
+  } catch (error) { $("#source-file-status").textContent = "讀取失敗：" + error.message; }
+  finally { $("#source-files").value = ""; }
+}
+$("#source-files").onchange = () => readSourceFiles($("#source-files").files);
+$(".source-files").addEventListener("dragover", event => event.preventDefault());
+$(".source-files").addEventListener("drop", event => {
+  event.preventDefault();
+  readSourceFiles(event.dataTransfer.files);
+});
+$("#analyze-source").onclick = async () => {
+  if (sourceBusy) return;
+  invalidateSource();
+  const revision = sourceRevision;
+  sourceBusy = true;
+  $("#analyze-source").disabled = true;
+  $("#source-result").textContent = "正在分析結構、三種螢幕寬度的樣式與互動…";
+  try {
+    const result = await SourceImporter.convert({
+      html: $("#source-html").value, css: $("#source-css").value,
+      javascript: $("#source-js").value, assets: sourceAssets,
+    }, { tags: [...TAGS], containers: [...CONTAINERS], styleKeys: STYLE_KEYS });
+    if (revision !== sourceRevision) return;
+    result.project = validateProject(result.project);
+    sourceConversion = result;
+    const summary = document.createElement("strong");
+    summary.textContent = "轉換完成：" + result.stats.nodes + " 個元件、" + result.stats.actions + " 筆互動。";
+    $("#source-result").replaceChildren(summary);
+    if (result.warnings.length) {
+      const ul = document.createElement("ul");
+      for (const warning of result.warnings) {
+        const li = document.createElement("li"); li.textContent = warning; ul.append(li);
+      }
+      $("#source-result").append(ul);
+    }
+    $("#load-source").disabled = false;
+    $("#download-source").disabled = false;
+  } catch (error) {
+    if (revision === sourceRevision) $("#source-result").textContent = "轉換失敗：" + error.message;
+  } finally {
+    sourceBusy = false;
+    $("#analyze-source").disabled = false;
+  }
+};
+$("#load-source").onclick = () => {
+  if (!sourceConversion) return;
+  commit(() => {
+    model = clone(sourceConversion.project);
+    selected = "root";
+  }, "已載入原始碼轉換結果；可繼續編輯，或按復原找回原作品。請到操作預覽確認成果。");
+  $("#source-dialog").close();
+};
+$("#download-source").onclick = () => {
+  if (sourceConversion) download("imported-visual-project.json", JSON.stringify(sourceConversion.project, null, 2), "application/json");
+};
 $("#project-file").onchange = async () => {
   const file = $("#project-file").files[0];
   if (!file) return;

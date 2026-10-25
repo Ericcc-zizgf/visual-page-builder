@@ -33,3 +33,5 @@
 新增測試在 tests/upgrade.cjs，配合原有 browser.cjs、edge.cjs。條件仍是預設選項，尚不支援任意 JavaScript、迴圈或 API 呼叫。
 
 互動範本新增驗證（tests/templates.cjs）：範本選單開關、載入與復原／重做、側欄反覆收合與展開、按鈕文字與 aria-expanded 同步、內容區填滿剩餘寬度、導覽更新內容、JSON 往返與草稿保存、離線 HTML 匯出，以及 375px 手機無水平溢出。
+
+原始碼匯入驗證（tests/source-import.cjs）：HTML 與附加 CSS／JS 檔案配對、樣式優先順序與三種螢幕取樣、靜態辨識收合／計數／輸入／if-else、含未支援運算的事件整段略過、來源腳本不執行與外部資源不讀取、JSON 下載、載入與復原／重做、轉換失敗保留原作品，以及組裝室側欄匯出 HTML 再匯入與手機視窗排版。

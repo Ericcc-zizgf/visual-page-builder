@@ -5,6 +5,8 @@
     <meta name="viewport" content="width=device-width,initial-scale=1" />
     <title>網頁組裝室 · 視覺化前端編輯器</title>
     <link rel="stylesheet" href="styles.css" />
+    <script src="vendor/babel.js" defer></script>
+    <script src="source-importer.js" defer></script>
     <script src="app.js" defer></script>
   </head>
   <body>
@@ -60,6 +62,7 @@
           <div id="tree"></div>
         </section>
         <div class="project-tools">
+          <button id="import-source">匯入 HTML / CSS / JS</button>
           <button id="save-project">儲存專案 JSON</button
           ><button id="import-project">載入專案 JSON</button
           ><input type="file" id="project-file" accept=".json,application/json" hidden /><button
@@ -125,6 +128,32 @@
         </section>
       </aside>
     </div>
+    <dialog id="source-dialog" aria-labelledby="source-title">
+      <div class="preview-heading">
+        <strong id="source-title">匯入原始碼</strong><button id="close-source">關閉 ✕</button>
+      </div>
+      <div class="source-body">
+        <p>貼上原始碼，或選取 HTML 與它使用的 CSS、JS 檔案。分析後可載入畫布，繼續調整元件與互動。</p>
+        <label class="source-files">選取或拖入檔案（可多選）
+          <input id="source-files" type="file" multiple accept=".html,.htm,.css,.js,.mjs" />
+        </label>
+        <p id="source-file-status" class="muted" role="status"></p>
+        <button id="clear-source-files">清除附加的 CSS／JS 檔案</button>
+        <div class="source-editors">
+          <label>HTML<textarea id="source-html" spellcheck="false" placeholder="貼上完整 HTML 或網頁片段"></textarea></label>
+          <label>CSS<textarea id="source-css" spellcheck="false" placeholder="貼上樣式；HTML 內的 style 也會分析"></textarea></label>
+          <label>JavaScript<textarea id="source-js" spellcheck="false" placeholder="貼上互動程式；HTML 內的 script 也會分析"></textarea></label>
+        </div>
+        <p class="muted">支援基本排版與桌面／平板／手機樣式，以及可辨識的文字更新、顯示隱藏、計數與輸入同步。動畫、外部圖片、套件與 API 等未支援內容會列在結果中。</p>
+        <button id="analyze-source" class="primary">分析並轉換</button>
+        <div id="source-result" role="status" aria-live="polite"></div>
+        <div class="source-result-actions">
+          <button id="load-source" class="primary" disabled>載入畫布</button>
+          <button id="download-source" disabled>下載專案 JSON</button>
+        </div>
+        <small>載入會取代目前畫布，可按「復原」找回。來源 JavaScript 只做語法分析，不會執行。</small>
+      </div>
+    </dialog>
     <dialog id="templates-dialog" aria-labelledby="templates-title">
       <div class="preview-heading">
         <strong id="templates-title">選擇互動範本</strong>

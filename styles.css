@@ -834,6 +834,21 @@ dialog::backdrop {
   height: auto;
   max-height: 90vh;
 }
+#source-dialog { width: min(1050px, 94vw); overflow: auto; }
+.source-body { padding: 20px; display: grid; gap: 14px; }
+.source-body p { margin: 0; }
+.source-files { padding: 16px; border: 1px dashed #9cad96; border-radius: 6px; }
+.source-files input { display: block; margin-top: 8px; max-width: 100%; }
+.source-editors { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; }
+.source-editors label { display: grid; gap: 6px; min-width: 0; }
+.source-editors textarea { width: 100%; min-height: 240px; resize: vertical; font: 12px/1.6 monospace; }
+.source-result-actions { display: flex; gap: 10px; flex-wrap: wrap; }
+#source-result { overflow-wrap: anywhere; }
+#source-result ul { max-height: 200px; overflow: auto; padding-left: 22px; }
+@media (max-width: 700px) {
+  .source-editors { grid-template-columns: 1fr; }
+  .source-editors textarea { min-height: 130px; }
+}
 .templates-body {
   padding: 20px;
   display: grid;
