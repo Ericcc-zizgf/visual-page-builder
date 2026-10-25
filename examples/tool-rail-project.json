@@ -1,0 +1,589 @@
+{
+  "version": 1,
+  "name": "全高側邊工具列",
+  "root": {
+    "id": "root",
+    "tag": "main",
+    "text": "",
+    "attrs": {},
+    "styles": {
+      "padding": "0",
+      "background-color": "#ffffff",
+      "color": "#292929"
+    },
+    "children": [
+      {
+        "id": "el-1",
+        "tag": "div",
+        "text": "",
+        "attrs": {},
+        "styles": {
+          "position": "relative",
+          "display": "flex",
+          "height": "100vh",
+          "overflow": "hidden"
+        },
+        "children": [
+          {
+            "id": "el-2",
+            "tag": "nav",
+            "text": "",
+            "attrs": {
+              "aria-label": "面板工具列"
+            },
+            "styles": {
+              "width": "64px",
+              "flex": "0 0 64px",
+              "display": "flex",
+              "flex-direction": "column",
+              "align-items": "center",
+              "gap": "16px",
+              "padding": "20px 8px",
+              "background-color": "#202b40"
+            },
+            "children": [
+              {
+                "id": "el-20",
+                "tag": "button",
+                "text": "▦",
+                "attrs": {
+                  "aria-label": "切換專案側欄"
+                },
+                "styles": {
+                  "width": "44px",
+                  "height": "44px",
+                  "padding": "0",
+                  "font-size": "24px",
+                  "border": "1px solid #53617a",
+                  "border-radius": "12px",
+                  "background-color": "#35435e",
+                  "color": "#ffffff"
+                },
+                "children": [],
+                "actions": [
+                  {
+                    "event": "click",
+                    "type": "toggle",
+                    "target": "el-3",
+                    "value": "",
+                    "condition": {
+                      "source": "el-4",
+                      "operator": "equals",
+                      "value": "專案"
+                    },
+                    "otherwise": {
+                      "type": "show",
+                      "target": "el-3",
+                      "value": ""
+                    }
+                  },
+                  {
+                    "event": "click",
+                    "type": "text",
+                    "target": "el-4",
+                    "value": "專案",
+                    "steps": [
+                      {
+                        "type": "text",
+                        "target": "el-5",
+                        "value": "你的工作空間"
+                      },
+                      {
+                        "type": "text",
+                        "target": "el-7",
+                        "value": "我的網頁作品"
+                      },
+                      {
+                        "type": "text",
+                        "target": "el-8",
+                        "value": "側邊欄設計練習"
+                      },
+                      {
+                        "type": "text",
+                        "target": "el-9",
+                        "value": "固定導覽列範例"
+                      }
+                    ]
+                  }
+                ],
+                "responsive": {
+                  "tablet": {},
+                  "mobile": {}
+                }
+              },
+              {
+                "id": "el-21",
+                "tag": "button",
+                "text": "✎",
+                "attrs": {
+                  "aria-label": "切換筆記側欄"
+                },
+                "styles": {
+                  "width": "44px",
+                  "height": "44px",
+                  "padding": "0",
+                  "font-size": "24px",
+                  "border": "1px solid #53617a",
+                  "border-radius": "12px",
+                  "background-color": "#35435e",
+                  "color": "#ffffff"
+                },
+                "children": [],
+                "actions": [
+                  {
+                    "event": "click",
+                    "type": "toggle",
+                    "target": "el-3",
+                    "value": "",
+                    "condition": {
+                      "source": "el-4",
+                      "operator": "equals",
+                      "value": "筆記"
+                    },
+                    "otherwise": {
+                      "type": "show",
+                      "target": "el-3",
+                      "value": ""
+                    }
+                  },
+                  {
+                    "event": "click",
+                    "type": "text",
+                    "target": "el-4",
+                    "value": "筆記",
+                    "steps": [
+                      {
+                        "type": "text",
+                        "target": "el-5",
+                        "value": "最近的學習筆記"
+                      },
+                      {
+                        "type": "text",
+                        "target": "el-7",
+                        "value": "HTML：頁面的結構"
+                      },
+                      {
+                        "type": "text",
+                        "target": "el-8",
+                        "value": "CSS：全高與伸縮排版"
+                      },
+                      {
+                        "type": "text",
+                        "target": "el-9",
+                        "value": "JavaScript：按鈕開關"
+                      }
+                    ]
+                  }
+                ],
+                "responsive": {
+                  "tablet": {},
+                  "mobile": {}
+                }
+              },
+              {
+                "id": "el-22",
+                "tag": "button",
+                "text": "⚙",
+                "attrs": {
+                  "aria-label": "切換設定側欄"
+                },
+                "styles": {
+                  "width": "44px",
+                  "height": "44px",
+                  "padding": "0",
+                  "font-size": "24px",
+                  "border": "1px solid #53617a",
+                  "border-radius": "12px",
+                  "background-color": "#35435e",
+                  "color": "#ffffff"
+                },
+                "children": [],
+                "actions": [
+                  {
+                    "event": "click",
+                    "type": "toggle",
+                    "target": "el-3",
+                    "value": "",
+                    "condition": {
+                      "source": "el-4",
+                      "operator": "equals",
+                      "value": "設定"
+                    },
+                    "otherwise": {
+                      "type": "show",
+                      "target": "el-3",
+                      "value": ""
+                    }
+                  },
+                  {
+                    "event": "click",
+                    "type": "text",
+                    "target": "el-4",
+                    "value": "設定",
+                    "steps": [
+                      {
+                        "type": "text",
+                        "target": "el-5",
+                        "value": "可以在編輯器調整的項目"
+                      },
+                      {
+                        "type": "text",
+                        "target": "el-7",
+                        "value": "側欄寬度：260px"
+                      },
+                      {
+                        "type": "text",
+                        "target": "el-8",
+                        "value": "頁面高度：100vh"
+                      },
+                      {
+                        "type": "text",
+                        "target": "el-9",
+                        "value": "手機版：側欄覆蓋內容"
+                      }
+                    ]
+                  }
+                ],
+                "responsive": {
+                  "tablet": {},
+                  "mobile": {}
+                }
+              }
+            ],
+            "actions": [],
+            "responsive": {
+              "tablet": {},
+              "mobile": {}
+            }
+          },
+          {
+            "id": "el-3",
+            "tag": "section",
+            "text": "",
+            "attrs": {
+              "aria-label": "全高工具側欄"
+            },
+            "styles": {
+              "width": "260px",
+              "flex": "0 0 260px",
+              "height": "100%",
+              "display": "flex",
+              "flex-direction": "column",
+              "padding": "24px 18px",
+              "background-color": "#f5f5f5",
+              "border": "1px solid #e7e7e7",
+              "overflow": "auto"
+            },
+            "children": [
+              {
+                "id": "el-4",
+                "tag": "h2",
+                "text": "專案",
+                "attrs": {},
+                "styles": {
+                  "margin": "0 0 24px",
+                  "font-size": "20px"
+                },
+                "children": [],
+                "actions": [],
+                "responsive": {
+                  "tablet": {},
+                  "mobile": {}
+                }
+              },
+              {
+                "id": "el-5",
+                "tag": "p",
+                "text": "你的工作空間",
+                "attrs": {},
+                "styles": {
+                  "margin": "0 0 12px",
+                  "font-size": "12px",
+                  "color": "#737373"
+                },
+                "children": [],
+                "actions": [],
+                "responsive": {
+                  "tablet": {},
+                  "mobile": {}
+                }
+              },
+              {
+                "id": "el-6",
+                "tag": "div",
+                "text": "",
+                "attrs": {},
+                "styles": {
+                  "display": "flex",
+                  "flex-direction": "column",
+                  "gap": "4px"
+                },
+                "children": [
+                  {
+                    "id": "el-7",
+                    "tag": "p",
+                    "text": "我的網頁作品",
+                    "attrs": {},
+                    "styles": {
+                      "margin": "0",
+                      "padding": "12px 10px",
+                      "font-size": "14px"
+                    },
+                    "children": [],
+                    "actions": [],
+                    "responsive": {
+                      "tablet": {},
+                      "mobile": {}
+                    }
+                  },
+                  {
+                    "id": "el-8",
+                    "tag": "p",
+                    "text": "側邊欄設計練習",
+                    "attrs": {},
+                    "styles": {
+                      "margin": "0",
+                      "padding": "12px 10px",
+                      "font-size": "14px"
+                    },
+                    "children": [],
+                    "actions": [],
+                    "responsive": {
+                      "tablet": {},
+                      "mobile": {}
+                    }
+                  },
+                  {
+                    "id": "el-9",
+                    "tag": "p",
+                    "text": "固定導覽列範例",
+                    "attrs": {},
+                    "styles": {
+                      "margin": "0",
+                      "padding": "12px 10px",
+                      "font-size": "14px"
+                    },
+                    "children": [],
+                    "actions": [],
+                    "responsive": {
+                      "tablet": {},
+                      "mobile": {}
+                    }
+                  }
+                ],
+                "actions": [],
+                "responsive": {
+                  "tablet": {},
+                  "mobile": {}
+                }
+              },
+              {
+                "id": "el-10",
+                "tag": "p",
+                "text": "再按目前的工具圖示即可收合側欄。",
+                "attrs": {},
+                "styles": {
+                  "margin-top": "auto",
+                  "padding-top": "32px",
+                  "font-size": "12px",
+                  "color": "#737373"
+                },
+                "children": [],
+                "actions": [],
+                "responsive": {
+                  "tablet": {},
+                  "mobile": {}
+                }
+              }
+            ],
+            "actions": [],
+            "responsive": {
+              "tablet": {},
+              "mobile": {
+                "position": "absolute",
+                "left": "64px",
+                "top": "0",
+                "bottom": "0",
+                "width": "calc(100% - 64px)",
+                "z-index": "2"
+              }
+            }
+          },
+          {
+            "id": "el-11",
+            "tag": "section",
+            "text": "",
+            "attrs": {
+              "aria-label": "主要工作區"
+            },
+            "styles": {
+              "flex": "1",
+              "width": "0",
+              "height": "100%",
+              "overflow": "auto",
+              "display": "flex",
+              "flex-direction": "column",
+              "padding": "24px 32px"
+            },
+            "children": [
+              {
+                "id": "el-12",
+                "tag": "p",
+                "text": "組裝室 / 側欄練習",
+                "attrs": {},
+                "styles": {
+                  "margin": "0",
+                  "color": "#737373",
+                  "font-size": "14px"
+                },
+                "children": [],
+                "actions": [],
+                "responsive": {
+                  "tablet": {},
+                  "mobile": {}
+                }
+              },
+              {
+                "id": "el-13",
+                "tag": "article",
+                "text": "",
+                "attrs": {},
+                "styles": {
+                  "width": "100%",
+                  "max-width": "640px",
+                  "margin": "auto",
+                  "padding": "48px 0"
+                },
+                "children": [
+                  {
+                    "id": "el-14",
+                    "tag": "h1",
+                    "text": "今天想做什麼？",
+                    "attrs": {},
+                    "styles": {
+                      "font-size": "32px",
+                      "margin": "0 0 20px"
+                    },
+                    "children": [],
+                    "actions": [],
+                    "responsive": {
+                      "tablet": {},
+                      "mobile": {}
+                    }
+                  },
+                  {
+                    "id": "el-15",
+                    "tag": "p",
+                    "text": "從左邊選擇專案、筆記或設定。側欄會從頂部延伸到底部，和主要工作區並排。",
+                    "attrs": {},
+                    "styles": {
+                      "color": "#646464",
+                      "line-height": "1.8"
+                    },
+                    "children": [],
+                    "actions": [],
+                    "responsive": {
+                      "tablet": {},
+                      "mobile": {}
+                    }
+                  },
+                  {
+                    "id": "el-16",
+                    "tag": "h2",
+                    "text": "試試工具按鈕",
+                    "attrs": {},
+                    "styles": {
+                      "font-size": "16px",
+                      "margin-top": "32px"
+                    },
+                    "children": [],
+                    "actions": [],
+                    "responsive": {
+                      "tablet": {},
+                      "mobile": {}
+                    }
+                  },
+                  {
+                    "id": "el-17",
+                    "tag": "p",
+                    "text": "按目前的圖示：收合或展開側欄。按其他圖示：開啟對應內容。收合後，右邊工作區會自動變寬。",
+                    "attrs": {},
+                    "styles": {
+                      "color": "#646464"
+                    },
+                    "children": [],
+                    "actions": [],
+                    "responsive": {
+                      "tablet": {},
+                      "mobile": {}
+                    }
+                  },
+                  {
+                    "id": "el-18",
+                    "tag": "p",
+                    "text": "回到編輯器，點 CSS 的 height: 100vh、display: flex 和 overflow: auto，再看工具按鈕的條件判斷與 hidden 切換。",
+                    "attrs": {},
+                    "styles": {
+                      "font-size": "13px",
+                      "color": "#737373"
+                    },
+                    "children": [],
+                    "actions": [],
+                    "responsive": {
+                      "tablet": {},
+                      "mobile": {}
+                    }
+                  }
+                ],
+                "actions": [],
+                "responsive": {
+                  "tablet": {},
+                  "mobile": {}
+                }
+              },
+              {
+                "id": "el-19",
+                "tag": "textarea",
+                "text": "",
+                "attrs": {
+                  "aria-label": "練習筆記",
+                  "placeholder": "記下你觀察到的排版變化…",
+                  "rows": "3"
+                },
+                "styles": {
+                  "width": "100%",
+                  "max-width": "640px",
+                  "min-height": "96px",
+                  "margin": "0 auto",
+                  "padding": "16px",
+                  "border": "1px solid #dedede",
+                  "border-radius": "16px",
+                  "background-color": "#fafafa"
+                },
+                "children": [],
+                "actions": [],
+                "responsive": {
+                  "tablet": {},
+                  "mobile": {}
+                }
+              }
+            ],
+            "actions": [],
+            "responsive": {
+              "tablet": {},
+              "mobile": {
+                "padding": "20px 16px"
+              }
+            }
+          }
+        ],
+        "actions": [],
+        "responsive": {
+          "tablet": {},
+          "mobile": {}
+        }
+      }
+    ],
+    "actions": []
+  }
+}

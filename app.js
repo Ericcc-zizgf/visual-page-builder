@@ -57,6 +57,8 @@ const STYLE_KEYS = [
   "border-radius",
   "box-shadow",
   "position",
+  "z-index",
+  "scroll-margin-top",
   "top",
   "right",
   "bottom",
@@ -76,6 +78,8 @@ const EVENTS = new Set(["click", "input", "change", "submit"]);
 const ACTIONS = {
   text: "更新文字",
   toggle: "顯示／隱藏",
+  show: "顯示元件",
+  hide: "隱藏元件",
   class: "切換醒目樣式",
   increment: "數字加一",
   input: "將目前輸入顯示成文字",
@@ -306,8 +310,16 @@ function actionLines(action, indent = "  ") {
   if (action.type === "toggle")
     lines.push(
       indent + "target.hidden = !target.hidden;",
-      indent + 'if (event.currentTarget.getAttribute("aria-controls") === target.id) event.currentTarget.setAttribute("aria-expanded", String(!target.hidden));',
+
     );
+  if (["show", "hide"].includes(action.type))
+    lines.push(indent + "target.hidden = " + (action.type === "hide") + ";");
+  if (["toggle", "show", "hide"].includes(action.type)) {
+    for (const control of all().filter(n => n.tag === "button" && n.actions.some(a => a.type === "toggle" && a.target === action.target))) {
+      const ref = `document.getElementById(${jsValue(control.id)})`;
+      lines.push(indent + `if (${ref}.getAttribute("aria-controls") === target.id) ${ref}.setAttribute("aria-expanded", String(!target.hidden));`);
+    }
+  }
   if (action.type === "class") lines.push(indent + 'target.classList.toggle("is-active");');
   if (action.type === "increment")
     lines.push(
@@ -1148,6 +1160,8 @@ function renderInspector() {
         ["fixed", "固定 fixed"],
         ["sticky", "黏附 sticky"],
       ]),
+      styleField("圖層順序 z-index", "z-index"),
+      styleField("跳轉上方留白 scroll-margin-top", "scroll-margin-top"),
       row(styleField("上 top", "top"), styleField("右 right", "right")),
       row(styleField("下 bottom", "bottom"), styleField("左 left", "left")),
     );
@@ -1792,6 +1806,7 @@ function sidebarDemo() {
       const n = make(tag);
       n.text = text;
       n.styles = styles;
+      n.responsive = { tablet: {}, mobile: {} };
       return n;
     };
     const header = node("header", "", {
@@ -1847,6 +1862,113 @@ function sidebarDemo() {
     model.root.children = [header, layout];
     selected = toggle.id;
   }, "已載入可收合側邊欄；按「操作預覽」即可試用，所有元件與互動都可以編輯。");
+}
+function stickyHeaderDemo() {
+  commit(() => {
+    model = blank();
+    model.name = "捲動固定頂部導覽列";
+    model.root.styles = { padding: "0", "background-color": "#f7f4ee", color: "#263c35" };
+    const node = (tag, text, styles = {}) => {
+      const n = make(tag);
+      n.text = text;
+      n.styles = styles;
+      n.responsive = { tablet: {}, mobile: {} };
+      return n;
+    };
+    const header = node("header", "", {
+      position: "sticky", top: "0", "z-index": "10", display: "flex", "align-items": "center",
+      "justify-content": "space-between", "flex-wrap": "wrap", gap: "12px", padding: "16px 24px",
+      "background-color": "#ffffff", "box-shadow": "0 3px 16px rgba(38, 60, 53, 0.12)",
+    });
+    header.children = [node("h2", "向下探索 ↓", { margin: "0", "font-size": "20px" })];
+    const nav = node("nav", "", { display: "flex", gap: "16px", "flex-wrap": "wrap" });
+    nav.attrs = { "aria-label": "頁面區段導覽" };
+    const content = node("div", "", { "max-width": "860px", margin: "0 auto", padding: "32px 24px" });
+    for (const [name, title, description, color] of [
+      ["開始", "往下捲動，導覽列會留在上方。", "使用滑鼠滾輪或觸控板往下捲。留意頂部白色導覽列，它會持續留在畫面上方；也可以點導覽連結跳到各區段。", "#e5eee5"],
+      ["原理", "關鍵是 sticky 和 top。", "position: sticky 讓導覽列先參與正常排版，捲到 top: 0 的位置後停留。z-index: 10 讓它顯示在內容上方，白色背景避免底下文字透出。", "#ede7db"],
+      ["練習", "修改一行，觀察差別。", "回到編輯畫布，選擇導覽列，點 CSS 原始碼中的 position: sticky。試著改成 static，或把 top 改成 16px，再按操作預覽向下捲動。", "#e5eaf1"],
+    ]) {
+      const section = node("section", "", { "min-height": "560px", "scroll-margin-top": "110px", padding: "32px", margin: "0 0 24px", "background-color": color, "border-radius": "16px" });
+      section.responsive.mobile = { padding: "24px 16px" };
+      section.children = [node("h1", title, { margin: "0 0 20px", "font-size": "30px" }), node("p", description, { "font-size": "18px", "line-height": "1.8" })];
+      content.children.push(section);
+      const link = node("a", name, { color: "#285d46", "font-weight": "700" });
+      link.attrs = { href: "#" + section.id };
+      nav.children.push(link);
+    }
+    header.children.push(nav);
+    model.root.children = [header, content];
+    selected = header.id;
+  }, "已載入固定頂部導覽列；按「操作預覽」向下捲動，或點導覽連結。點 CSS 的 position、top、z-index 可查看解說。");
+}
+function toolRailDemo() {
+  commit(() => {
+    model = blank();
+    model.name = "全高側邊工具列";
+    model.root.styles = { padding: "0", "background-color": "#ffffff", color: "#292929" };
+    const node = (tag, text, styles = {}) => {
+      const n = make(tag);
+      Object.assign(n, { text, styles, responsive: { tablet: {}, mobile: {} } });
+      return n;
+    };
+    const shell = node("div", "", { position: "relative", display: "flex", height: "100vh", overflow: "hidden" });
+    const rail = node("nav", "", {
+      width: "64px", flex: "0 0 64px", display: "flex", "flex-direction": "column",
+      "align-items": "center", gap: "16px", padding: "20px 8px", "background-color": "#202b40",
+    });
+    rail.attrs = { "aria-label": "面板工具列" };
+    const pane = node("section", "", {
+      width: "260px", flex: "0 0 260px", height: "100%", display: "flex", "flex-direction": "column",
+      padding: "24px 18px", "background-color": "#f5f5f5", border: "1px solid #e7e7e7", overflow: "auto",
+    });
+    pane.attrs = { "aria-label": "全高工具側欄" };
+    pane.responsive.mobile = { position: "absolute", left: "64px", top: "0", bottom: "0", width: "calc(100% - 64px)", "z-index": "2" };
+    const title = node("h2", "專案", { margin: "0 0 24px", "font-size": "20px" });
+    const detail = node("p", "你的工作空間", { margin: "0 0 12px", "font-size": "12px", color: "#737373" });
+    const list = node("div", "", { display: "flex", "flex-direction": "column", gap: "4px" });
+    const rows = ["我的網頁作品", "側邊欄設計練習", "固定導覽列範例"].map(text => node("p", text, { margin: "0", padding: "12px 10px", "font-size": "14px" }));
+    list.children = rows;
+    const footer = node("p", "再按目前的工具圖示即可收合側欄。", { "margin-top": "auto", "padding-top": "32px", "font-size": "12px", color: "#737373" });
+    pane.children = [title, detail, list, footer];
+    const content = node("section", "", { flex: "1", width: "0", height: "100%", overflow: "auto", display: "flex", "flex-direction": "column", padding: "24px 32px" });
+    content.attrs = { "aria-label": "主要工作區" };
+    content.responsive.mobile = { padding: "20px 16px" };
+    const heading = node("p", "組裝室 / 側欄練習", { margin: "0", color: "#737373", "font-size": "14px" });
+    const intro = node("article", "", { width: "100%", "max-width": "640px", margin: "auto", padding: "48px 0" });
+    intro.children = [
+      node("h1", "今天想做什麼？", { "font-size": "32px", margin: "0 0 20px" }),
+      node("p", "從左邊選擇專案、筆記或設定。側欄會從頂部延伸到底部，和主要工作區並排。", { color: "#646464", "line-height": "1.8" }),
+      node("h2", "試試工具按鈕", { "font-size": "16px", "margin-top": "32px" }),
+      node("p", "按目前的圖示：收合或展開側欄。按其他圖示：開啟對應內容。收合後，右邊工作區會自動變寬。", { color: "#646464" }),
+      node("p", "回到編輯器，點 CSS 的 height: 100vh、display: flex 和 overflow: auto，再看工具按鈕的條件判斷與 hidden 切換。", { "font-size": "13px", color: "#737373" }),
+    ];
+    const note = node("textarea", "", { width: "100%", "max-width": "640px", "min-height": "96px", margin: "0 auto", padding: "16px", border: "1px solid #dedede", "border-radius": "16px", "background-color": "#fafafa" });
+    note.attrs = { "aria-label": "練習筆記", placeholder: "記下你觀察到的排版變化…", rows: "3" };
+    content.children = [heading, intro, note];
+    for (const [icon, name, description, items] of [
+      ["▦", "專案", "你的工作空間", ["我的網頁作品", "側邊欄設計練習", "固定導覽列範例"]],
+      ["✎", "筆記", "最近的學習筆記", ["HTML：頁面的結構", "CSS：全高與伸縮排版", "JavaScript：按鈕開關"]],
+      ["⚙", "設定", "可以在編輯器調整的項目", ["側欄寬度：260px", "頁面高度：100vh", "手機版：側欄覆蓋內容"]],
+    ]) {
+      const tool = node("button", icon, { width: "44px", height: "44px", padding: "0", "font-size": "24px",
+        border: "1px solid #53617a", "border-radius": "12px", "background-color": "#35435e", color: "#ffffff" });
+      tool.attrs = { "aria-label": "切換" + name + "側欄" };
+      tool.actions = [
+        { event: "click", type: "toggle", target: pane.id, value: "",
+          condition: { source: title.id, operator: "equals", value: name },
+          otherwise: { type: "show", target: pane.id, value: "" } },
+        { event: "click", type: "text", target: title.id, value: name, steps: [
+          { type: "text", target: detail.id, value: description },
+          ...rows.map((row, i) => ({ type: "text", target: row.id, value: items[i] })),
+        ] },
+      ];
+      rail.children.push(tool);
+    }
+    shell.children = [rail, pane, content];
+    model.root.children = [shell];
+    selected = pane.id;
+  }, "已載入全高側邊工具列；按同一圖示開關側欄，按其他圖示切換內容。桌面並排，手機覆蓋，工具列持續保留。");
 }
 for (const [tag, label] of TYPES) {
   const b = document.createElement("button");
@@ -1917,7 +2039,9 @@ $("#demo").onclick = () => $("#templates-dialog").showModal();
 $("#close-templates").onclick = () => $("#templates-dialog").close();
 document.querySelectorAll("[data-template]").forEach((button) => {
   button.onclick = () => {
-    if (button.dataset.template === "sidebar") sidebarDemo();
+    if (button.dataset.template === "sticky-header") stickyHeaderDemo();
+    else if (button.dataset.template === "tool-rail") toolRailDemo();
+    else if (button.dataset.template === "sidebar") sidebarDemo();
     else demo();
     $("#templates-dialog").close();
   };

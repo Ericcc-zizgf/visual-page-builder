@@ -1,0 +1,317 @@
+{
+  "version": 1,
+  "name": "捲動固定頂部導覽列",
+  "root": {
+    "id": "root",
+    "tag": "main",
+    "text": "",
+    "attrs": {},
+    "styles": {
+      "padding": "0",
+      "background-color": "#f7f4ee",
+      "color": "#263c35"
+    },
+    "children": [
+      {
+        "id": "el-20",
+        "tag": "header",
+        "text": "",
+        "attrs": {},
+        "styles": {
+          "position": "sticky",
+          "top": "0",
+          "z-index": "10",
+          "display": "flex",
+          "align-items": "center",
+          "justify-content": "space-between",
+          "flex-wrap": "wrap",
+          "gap": "12px",
+          "padding": "16px 24px",
+          "background-color": "#ffffff",
+          "box-shadow": "0 3px 16px rgba(38, 60, 53, 0.12)"
+        },
+        "children": [
+          {
+            "id": "el-21",
+            "tag": "h2",
+            "text": "向下探索 ↓",
+            "attrs": {},
+            "styles": {
+              "margin": "0",
+              "font-size": "20px"
+            },
+            "children": [],
+            "actions": [],
+            "responsive": {
+              "tablet": {},
+              "mobile": {}
+            }
+          },
+          {
+            "id": "el-22",
+            "tag": "nav",
+            "text": "",
+            "attrs": {
+              "aria-label": "頁面區段導覽"
+            },
+            "styles": {
+              "display": "flex",
+              "gap": "16px",
+              "flex-wrap": "wrap"
+            },
+            "children": [
+              {
+                "id": "el-27",
+                "tag": "a",
+                "text": "開始",
+                "attrs": {
+                  "href": "#el-24"
+                },
+                "styles": {
+                  "color": "#285d46",
+                  "font-weight": "700"
+                },
+                "children": [],
+                "actions": [],
+                "responsive": {
+                  "tablet": {},
+                  "mobile": {}
+                }
+              },
+              {
+                "id": "el-31",
+                "tag": "a",
+                "text": "原理",
+                "attrs": {
+                  "href": "#el-28"
+                },
+                "styles": {
+                  "color": "#285d46",
+                  "font-weight": "700"
+                },
+                "children": [],
+                "actions": [],
+                "responsive": {
+                  "tablet": {},
+                  "mobile": {}
+                }
+              },
+              {
+                "id": "el-35",
+                "tag": "a",
+                "text": "練習",
+                "attrs": {
+                  "href": "#el-32"
+                },
+                "styles": {
+                  "color": "#285d46",
+                  "font-weight": "700"
+                },
+                "children": [],
+                "actions": [],
+                "responsive": {
+                  "tablet": {},
+                  "mobile": {}
+                }
+              }
+            ],
+            "actions": [],
+            "responsive": {
+              "tablet": {},
+              "mobile": {}
+            }
+          }
+        ],
+        "actions": [],
+        "responsive": {
+          "tablet": {},
+          "mobile": {}
+        }
+      },
+      {
+        "id": "el-23",
+        "tag": "div",
+        "text": "",
+        "attrs": {},
+        "styles": {
+          "max-width": "860px",
+          "margin": "0 auto",
+          "padding": "32px 24px"
+        },
+        "children": [
+          {
+            "id": "el-24",
+            "tag": "section",
+            "text": "",
+            "attrs": {},
+            "styles": {
+              "min-height": "560px",
+              "scroll-margin-top": "110px",
+              "padding": "32px",
+              "margin": "0 0 24px",
+              "background-color": "#e5eee5",
+              "border-radius": "16px"
+            },
+            "children": [
+              {
+                "id": "el-25",
+                "tag": "h1",
+                "text": "往下捲動，導覽列會留在上方。",
+                "attrs": {},
+                "styles": {
+                  "margin": "0 0 20px",
+                  "font-size": "30px"
+                },
+                "children": [],
+                "actions": [],
+                "responsive": {
+                  "tablet": {},
+                  "mobile": {}
+                }
+              },
+              {
+                "id": "el-26",
+                "tag": "p",
+                "text": "使用滑鼠滾輪或觸控板往下捲。留意頂部白色導覽列，它會持續留在畫面上方；也可以點導覽連結跳到各區段。",
+                "attrs": {},
+                "styles": {
+                  "font-size": "18px",
+                  "line-height": "1.8"
+                },
+                "children": [],
+                "actions": [],
+                "responsive": {
+                  "tablet": {},
+                  "mobile": {}
+                }
+              }
+            ],
+            "actions": [],
+            "responsive": {
+              "tablet": {},
+              "mobile": {
+                "padding": "24px 16px"
+              }
+            }
+          },
+          {
+            "id": "el-28",
+            "tag": "section",
+            "text": "",
+            "attrs": {},
+            "styles": {
+              "min-height": "560px",
+              "scroll-margin-top": "110px",
+              "padding": "32px",
+              "margin": "0 0 24px",
+              "background-color": "#ede7db",
+              "border-radius": "16px"
+            },
+            "children": [
+              {
+                "id": "el-29",
+                "tag": "h1",
+                "text": "關鍵是 sticky 和 top。",
+                "attrs": {},
+                "styles": {
+                  "margin": "0 0 20px",
+                  "font-size": "30px"
+                },
+                "children": [],
+                "actions": [],
+                "responsive": {
+                  "tablet": {},
+                  "mobile": {}
+                }
+              },
+              {
+                "id": "el-30",
+                "tag": "p",
+                "text": "position: sticky 讓導覽列先參與正常排版，捲到 top: 0 的位置後停留。z-index: 10 讓它顯示在內容上方，白色背景避免底下文字透出。",
+                "attrs": {},
+                "styles": {
+                  "font-size": "18px",
+                  "line-height": "1.8"
+                },
+                "children": [],
+                "actions": [],
+                "responsive": {
+                  "tablet": {},
+                  "mobile": {}
+                }
+              }
+            ],
+            "actions": [],
+            "responsive": {
+              "tablet": {},
+              "mobile": {
+                "padding": "24px 16px"
+              }
+            }
+          },
+          {
+            "id": "el-32",
+            "tag": "section",
+            "text": "",
+            "attrs": {},
+            "styles": {
+              "min-height": "560px",
+              "scroll-margin-top": "110px",
+              "padding": "32px",
+              "margin": "0 0 24px",
+              "background-color": "#e5eaf1",
+              "border-radius": "16px"
+            },
+            "children": [
+              {
+                "id": "el-33",
+                "tag": "h1",
+                "text": "修改一行，觀察差別。",
+                "attrs": {},
+                "styles": {
+                  "margin": "0 0 20px",
+                  "font-size": "30px"
+                },
+                "children": [],
+                "actions": [],
+                "responsive": {
+                  "tablet": {},
+                  "mobile": {}
+                }
+              },
+              {
+                "id": "el-34",
+                "tag": "p",
+                "text": "回到編輯畫布，選擇導覽列，點 CSS 原始碼中的 position: sticky。試著改成 static，或把 top 改成 16px，再按操作預覽向下捲動。",
+                "attrs": {},
+                "styles": {
+                  "font-size": "18px",
+                  "line-height": "1.8"
+                },
+                "children": [],
+                "actions": [],
+                "responsive": {
+                  "tablet": {},
+                  "mobile": {}
+                }
+              }
+            ],
+            "actions": [],
+            "responsive": {
+              "tablet": {},
+              "mobile": {
+                "padding": "24px 16px"
+              }
+            }
+          }
+        ],
+        "actions": [],
+        "responsive": {
+          "tablet": {},
+          "mobile": {}
+        }
+      }
+    ],
+    "actions": []
+  }
+}

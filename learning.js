@@ -26,7 +26,9 @@ window.BuilderLearning = (() => {
     border: ["邊框", "在元件周圍畫出邊界。", "1px solid #d9e3d2 分別是線寬、實線樣式、顏色。"],
     "border-radius": ["圓角", "讓元件邊角呈現圓弧。", "8px 是圓角半徑；背景和邊框都會依照圓角呈現。"],
     "box-shadow": ["陰影", "在元件周圍增加陰影，不會替它預留額外排版空間。", "常見順序是水平位移、垂直位移、模糊半徑、擴張半徑與顏色。"],
-    position: ["定位方式", "static 跟隨正常排版；relative 可以從原位置偏移；absolute 通常以最近的定位祖先為基準；fixed 通常以視窗為基準。", "absolute 與 fixed 會離開正常排版，周圍元件不會替它保留原空間。"],
+    "scroll-margin-top": ["跳轉時的上方留白", "用導覽連結捲到這個元件時，在上方保留距離，避免固定導覽列遮住區段標題。", "設定在被跳轉到的區段上；110px 是捲動對齊時預留的上方空間，不會改變一般排版的外距。"],
+    "z-index": ["圖層順序", "控制定位元件重疊時的前後順序；此範例讓導覽列蓋在頁面內容上方。", "數值越大通常越靠前，但仍受祖先的堆疊環境限制；此處配合 position: sticky 使用。"],
+    position: ["定位方式", "static 跟隨正常排版；relative 可以從原位置偏移；absolute 通常以最近的定位祖先為基準；fixed 通常以視窗為基準；sticky 會在捲動到指定偏移時停留，直到其容器邊界。", "absolute 與 fixed 會離開正常排版；sticky 保留排版空間，需搭配 top 等偏移，而且會受祖先 overflow 與可捲動空間影響。"],
     flex: ["Flex 子元件伸縮", "控制子元件如何分配或縮減主軸空間，設定在 Flex 容器內的子元件上。", "三個值依序是放大比例、縮小比例、基準尺寸；0 0 220px 表示不伸縮、以 220px 為基準。"],
     overflow: ["溢出內容處理", "設定內容超出元件範圍時要如何顯示。", "hidden 裁切、auto 在需要時提供捲動、visible 允許內容顯示在範圍外。"],
   };
@@ -68,9 +70,11 @@ window.BuilderLearning = (() => {
     else if (text.includes("addEventListener(")) { title = "註冊事件"; effect = "讓來源元件在 click、input 等事件發生時，執行 function 大括號內的程式。"; syntax = "addEventListener(事件名稱, 處理函式)；event 是事件資料，可用 event.currentTarget 取得註冊事件的元件。"; }
     else if (text.includes("getElementById(") && text.startsWith("const ")) { title = "找到元件並存入變數"; effect = "依 ID 找到網頁上的元件，存入 target 或 source 變數，供後面的程式使用。"; syntax = "const 宣告不能重新指定的變數；= 將右側結果指定給左側；這不代表元件內容不能被修改。"; }
     else if (/^if\s*\(/.test(text) && text.includes("aria-controls")) { title = "確認目標後同步展開狀態"; effect = "確認按鈕控制的 ID 和目前目標元件相同，才把最新展開狀態寫入 aria-expanded。"; syntax = "getAttribute(...) 讀取屬性；=== 比較是否相等；setAttribute(...) 更新屬性。這個狀態供輔助工具讀取。"; }
+    else if (text.includes("querySelectorAll")) { title = "同步所有控制按鈕"; effect = "找出帶有 aria-controls 的按鈕，逐一更新控制同一側欄的展開狀態。"; syntax = "querySelectorAll 選取所有符合條件的元素；forEach 對每個元素執行函式，control 是本次處理的元素。"; }
     else if (text.includes("aria-controls")) { title = "設定按鈕控制的目標"; effect = "用 aria-controls 說明按鈕對應的受控元件，供輔助工具理解。"; syntax = "setAttribute(屬性名稱, 屬性值) 設定 HTML 屬性；此行本身不會收合側欄。"; }
     else if (text.includes("aria-expanded")) { title = "同步展開狀態"; effect = "把目前是否展開的狀態寫入 aria-expanded，供輔助工具讀取。"; syntax = "!target.hidden 在未隱藏時是 true；String(...) 把真假值轉成文字。此行本身不會改變顯示狀態。"; }
     else if (text.includes("target.hidden = !target.hidden")) { title = "反轉顯示／隱藏狀態"; effect = "先讀取目前 hidden 的真假值，再反轉並存回去：原本顯示就隱藏，原本隱藏就顯示。"; syntax = "= 是指定；! 是邏輯反轉。false → !false → true；hidden 為 true 表示隱藏。"; }
+    else if (/target\.hidden = (true|false);/.test(text)) { title = "設定顯示狀態"; effect = text.includes("= true") ? "將 hidden 設為 true，隱藏目標元件，其他工具按鈕仍然保留。" : "將 hidden 設為 false，顯示目標元件；已顯示時再次執行也會維持顯示。"; syntax = "hidden 是布林屬性；true 表示隱藏、false 表示顯示。= 將右邊的值指定給左邊。"; }
     else if (/^const inputValue\s*=/.test(text)) { title = "讀取條件要比較的內容"; effect = "輸入框讀 value，其他元件讀 textContent；轉成字串後移除前後空白。"; syntax = "條件 ? A : B 是三元運算；String(...) 轉成文字；trim() 去除前後空白；matches(...) 檢查元件種類。"; }
     else if (/^if\s*\(/.test(text)) { title = "判斷條件"; effect = "條件成立時才執行接下來大括號裡的動作。"; syntax = "=== 比較兩邊是否相等；!== 比較是否不相等；\"\" 是空字串。它們和用來指定值的 = 不同。"; }
     else if (text.includes("else")) { title = "條件不成立時的分支"; effect = "前面的 if 條件不成立時，執行 else 裡的程式。"; syntax = "if 與 else 是兩條分支，每次只會選擇其中一條。"; }
@@ -100,7 +104,7 @@ window.BuilderLearning = (() => {
       }
       if (JSON.stringify(old.attrs) !== JSON.stringify(n.attrs)) entries.push({ title: "更新 HTML 屬性", htmlNode: n.id, effect: who + " 的屬性已更新。屬性是寫在開始標籤裡的設定，例如 placeholder 是輸入提示，href 是連結目的地。", code: "<" + n.tag + ' id="' + n.id + '" ' + Object.entries(n.attrs).map(([k, v]) => k + '="' + v + '"').join(" ") + ">" });
       if (JSON.stringify(old.actions) !== JSON.stringify(n.actions)) {
-        const names = { text: "更新文字", toggle: "顯示／隱藏", class: "切換醒目樣式", increment: "數字加一", input: "同步輸入內容" };
+        const names = { text: "更新文字", toggle: "顯示／隱藏", show: "顯示元件", hide: "隱藏元件", class: "切換醒目樣式", increment: "數字加一", input: "同步輸入內容" };
         const added = n.actions.filter(a => !old.actions.some(b => JSON.stringify(a) === JSON.stringify(b)));
         entries.push({ title: "更新 JavaScript 互動", actionNode: n.id, effect: who + (added.length ? "：" + added.map(a => a.event + " 事件 → " + names[a.type] + " → " + label(newMap.get(a.target)) + (a.condition ? "（先判斷條件）" : "") + (a.steps?.length ? "，接著執行 " + a.steps.length + " 個動作" : "")).join("；") : " 的既有動作已移除。"), tip: "新增事件只是註冊處理方式；請到「操作預覽」觸發事件，觀察程式執行。點 JavaScript 的各行可逐行解讀。" });
       }
